@@ -49,6 +49,7 @@ func (d *CelestiaStore) Get(ctx context.Context, key []byte) ([]byte, error) {
 	blobs, err := d.Client.DA.Get(ctx, [][]byte{key[2:]}, d.Namespace)
 	cancel()
 	if err != nil || len(blobs) == 0 {
+		d.Log.Error("celestia error", "err", err)
 		return nil, fmt.Errorf("celestia: failed to resolve frame: %w", err)
 	}
 	if len(blobs) != 1 {
