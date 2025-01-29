@@ -124,6 +124,8 @@ func (d *CelestiaServer) HandlePut(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	d.log.Info("request len", r.ContentLength)
+
 	comm, err := d.store.Put(r.Context(), input)
 	if err != nil {
 		key := hexutil.Encode(comm)
