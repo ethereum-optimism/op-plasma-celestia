@@ -23,8 +23,8 @@ type CelestiaConfig struct {
 type CelestiaStore struct {
 	Log        log.Logger
 	GetTimeout time.Duration
-	Namespace []byte
-	Client *client.Client
+	Namespace  []byte
+	Client     *client.Client
 }
 
 // NewCelestiaStore returns a celestia store.
@@ -37,9 +37,9 @@ func NewCelestiaStore(cfg CelestiaConfig) *CelestiaStore {
 	}
 	return &CelestiaStore{
 		Log:        Log,
-		Client:         client,
+		Client:     client,
 		GetTimeout: time.Minute,
-		Namespace: cfg.Namespace,
+		Namespace:  cfg.Namespace,
 	}
 }
 
@@ -58,6 +58,7 @@ func (d *CelestiaStore) Get(ctx context.Context, key []byte) ([]byte, error) {
 }
 
 func (d *CelestiaStore) Put(ctx context.Context, data []byte) ([]byte, error) {
+	d.Log.Debug("submitting blob to celestia", "datalen", len(data), "data", hex.EncodeToString(data))
 	ids, err := d.Client.DA.Submit(ctx, [][]byte{data}, -1, d.Namespace)
 	if err == nil && len(ids) == 1 {
 		d.Log.Info("celestia: blob successfully submitted", "id", hex.EncodeToString(ids[0]))
